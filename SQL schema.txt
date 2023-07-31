@@ -1,0 +1,208 @@
+CREATE TABLE Customer (
+  customer_id INT AUTO_INCREMENT PRIMARY KEY,
+  first_name VARCHAR(30) NOT NULL,
+  middle_name VARCHAR(30),
+  last_name VARCHAR(30),
+  email VARCHAR(100) NOT NULL UNIQUE,
+  password VARCHAR(20) NOT NULL,
+  address VARCHAR(200) NOT NULL,
+  phone_number VARCHAR(15) NOT NULL UNIQUE,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE Category (
+  category_id INT AUTO_INCREMENT PRIMARY KEY,
+  category_name VARCHAR(80) NOT NULL
+);
+
+CREATE TABLE Product (
+  product_id INT AUTO_INCREMENT PRIMARY KEY,
+  product_name VARCHAR(100) NOT NULL,
+  category_id INT NOT NULL,
+  MRP DECIMAL(10,2) NOT NULL,
+  quantity INT NOT NULL,
+  brand VARCHAR(50) DEFAULT 'generic',
+  discount DECIMAL(10,2) DEFAULT 0,
+  mfg_date INT,
+  mfg_month INT,
+  mfg_year INT,
+  expiry_date INT,
+  expiry_weeks INT,
+  expiry_months INT,
+  FOREIGN KEY (category_id) REFERENCES Category(category_id)
+);
+
+CREATE TABLE Admin (
+  admin_id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(15) NOT NULL UNIQUE,
+  password VARCHAR(20) NOT NULL,
+  email VARCHAR(80) NOT NULL UNIQUE,
+  name VARCHAR(80) NOT NULL
+);
+
+
+
+CREATE TABLE order_placed (
+  order_id INT AUTO_INCREMENT PRIMARY KEY,
+  total_amount DECIMAL(10, 2),
+  order_status ENUM('Pending', 'Shipped', 'Delivered') NOT NULL,
+  order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+  customer_id INT,
+  product_id INT,
+  FOREIGN KEY (customer_id) REFERENCES Customer (customer_id),
+  FOREIGN KEY (product_id) REFERENCES Product (product_id)
+);
+
+CREATE TABLE Review (
+  Review_ID int AUTO_INCREMENT PRIMARY KEY,
+  product_id INT,
+  customer_id INT,
+  Text text,
+  Date timestamp DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (product_id) REFERENCES Product (product_id),
+  FOREIGN KEY (customer_id) REFERENCES Customer (customer_id)
+);
+
+
+
+
+CREATE TABLE Cart (
+  Cart_ID int AUTO_INCREMENT PRIMARY KEY,
+  Quantity int DEFAULT 0,
+  Customer_ID int,
+  Product_ID int,
+  FOREIGN KEY (Customer_ID) REFERENCES Customer (Customer_ID),
+  FOREIGN KEY (Product_ID) REFERENCES Product (Product_ID)
+);
+
+
+CREATE TABLE Payment (
+  payment_id INT AUTO_INCREMENT PRIMARY KEY,
+  customer_id INT NOT NULL,
+  order_id INT NOT NULL,
+  payment_method ENUM('UPI', 'COD'),
+  FOREIGN KEY (customer_id) REFERENCES Customer (customer_id),
+  FOREIGN KEY (order_id) REFERENCES order_placed (order_id)
+);
+
+CREATE TABLE orderdate (
+  order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+  customer_id int NOT NULL,
+  order_id INT,
+  FOREIGN KEY (customer_id) REFERENCES customer (customer_id),
+  FOREIGN KEY (order_id) REFERENCES order_placed (order_id)
+);
+
+
+
+INSERT INTO Customer (first_name, middle_name, last_name, email, password, address, phone_number) 
+VALUES 
+('Rohit', 'Kumar', 'Sharma', 'rohit@example.com', 'password1', 'Flat No. 201, Ram Nagar', '919876543210'),
+('Priya', 'Singh', 'Yadav', 'priya@example.com', 'password2', 'B-302, Shanti Niketan', '918765432109'),
+('Vikas', 'Gupta', 'Mishra', 'vikas@example.com', 'password3', 'D-101, Raj Nagar Extension', '917654321098'),
+('Sneha', 'Raj', 'Srivastava', 'sneha@example.com', 'password4', 'C-203, Gomti Nagar', '916543210987'),
+('Amit', 'Kumar', 'Dubey', 'amit@example.com', 'password5', 'Flat No. 501, Vibhuti Khand', '915432109876'),
+('Shweta', 'Singh', 'Chauhan', 'shweta@example.com', 'password6', 'B-704, Indirapuram', '914321098765'),
+('Rajat', 'Verma', 'Trivedi', 'rajat@example.com', 'password7', 'Flat No. 302, Sector-12', '913210987654'),
+('Shubham', 'Singh', 'Bisht', 'shubham@example.com', 'password8', 'A-502, Crossing Republik', '912109876543'),
+('Divya', 'Raj', 'Mishra', 'divya@example.com', 'password9', 'C-101, Rajajipuram', '911098765432'),
+('Ankit', 'Kumar', 'Verma', 'ankit@example.com', 'password10', 'Flat No. 402, Aliganj', '910987654321');
+
+
+INSERT INTO Category (category_name) VALUES 
+('Grocery'),
+('Personal Care'),
+('Home Appliances'),
+('Electronics'),
+('Clothing'),
+('Footwear'),
+('Furniture'),
+('Books'),
+('Toys'),
+('Stationery');
+
+
+INSERT INTO Product (product_name, category_id, MRP, quantity, brand, discount, mfg_date, mfg_month, mfg_year, expiry_date, expiry_weeks, expiry_months) VALUES 
+('Amul Butter', 1, 50.00, 100, 'Amul', 0, 1, 4, 2023, 1, 12, 24),
+('Patanjali Toothpaste', 2, 30.00, 200, 'Patanjali', 5, 1, 5, 2023, 1, 12, 24),
+('Philips Iron', 3, 1500.00, 50, 'Philips', 10, 1, 6, 2023, 1, 12, 24),
+('LG Refrigerator', 3, 20000.00, 10, 'LG', 5, 1, 7, 2023, 1, 12, 24),
+('Samsung LED TV', 4, 50000.00, 5, 'Samsung', 8, 1, 3, 2023, 1, 12, 24),
+('Puma T-Shirt', 5, 500.00, 50, 'Puma', 15, 1, 4, 2023, 1, 12, 24),
+('Adidas Running Shoes', 6, 2000.00, 20, 'Adidas', 10, 1, 8, 2023, 1, 12, 24),
+('Nilkamal Plastic Chair', 7, 500.00, 100, 'Nilkamal', 0, 1, 9, 2023, 1, 12, 24),
+('The Alchemist Book', 8, 250.00, 30, 'HarperCollins', 5, 1, 2, 2023, 1, 12, 24),
+('Lego Building Blocks', 9, 1000.00, 10, 'Lego', 0, 1, 11, 2023, 1, 12, 24);
+
+
+INSERT INTO order_placed (total_amount, order_status, customer_id, product_id) VALUES (2000.00, 'Delivered', 1, 1);
+INSERT INTO order_placed (total_amount, order_status, customer_id, product_id) VALUES (1500.00, 'Shipped', 2, 3);
+INSERT INTO order_placed (total_amount, order_status, customer_id, product_id) VALUES (3000.00, 'Pending', 3, 5);
+INSERT INTO order_placed (total_amount, order_status, customer_id, product_id) VALUES (2500.00, 'Shipped', 4, 6);
+INSERT INTO order_placed (total_amount, order_status, customer_id, product_id) VALUES (4000.00, 'Delivered', 5, 9);
+INSERT INTO order_placed (total_amount, order_status, customer_id, product_id) VALUES (1000.00, 'Delivered', 1, 2);
+INSERT INTO order_placed (total_amount, order_status, customer_id, product_id) VALUES (800.00, 'Shipped', 2, 4);
+INSERT INTO order_placed (total_amount, order_status, customer_id, product_id) VALUES (6000.00, 'Pending', 3, 7);
+INSERT INTO order_placed (total_amount, order_status, customer_id, product_id) VALUES (3500.00, 'Shipped', 4, 8);
+INSERT INTO order_placed (total_amount, order_status, customer_id, product_id) VALUES (5000.00, 'Delivered', 5, 10);
+
+
+
+INSERT INTO Review (product_id, customer_id, Text) VALUES (1, 1, 'This product is great!');
+INSERT INTO Review (product_id, customer_id, Text) VALUES (3, 2, 'Average product, nothing special.');
+INSERT INTO Review (product_id, customer_id, Text) VALUES (5, 3, 'I am very disappointed with the quality.');
+INSERT INTO Review (product_id, customer_id, Text) VALUES (6, 4, 'The product is good, but the delivery was late.');
+INSERT INTO Review (product_id, customer_id, Text) VALUES (9, 5, 'I am very satisfied with the product.');
+INSERT INTO Review (product_id, customer_id, Text) VALUES (2, 1, 'Excellent product, highly recommended!');
+INSERT INTO Review (product_id, customer_id, Text) VALUES (4, 2, 'The product is good but overpriced.');
+INSERT INTO Review (product_id, customer_id, Text) VALUES (7, 3, 'This product is not as described.');
+INSERT INTO Review (product_id, customer_id, Text) VALUES (8, 4, 'The quality is good, but the packaging was poor.');
+INSERT INTO Review (product_id, customer_id, Text) VALUES (10, 5, 'The product was damaged during delivery.');
+
+
+
+INSERT INTO Cart (Quantity, Customer_ID, Product_ID) VALUES (2, 1, 1);
+INSERT INTO Cart (Quantity, Customer_ID, Product_ID) VALUES (1, 2, 3);
+INSERT INTO Cart (Quantity, Customer_ID, Product_ID) VALUES (3, 3, 5);
+INSERT INTO Cart (Quantity, Customer_ID, Product_ID) VALUES (2, 4, 6);
+INSERT INTO Cart (Quantity, Customer_ID, Product_ID) VALUES (1, 5, 9);
+INSERT INTO Cart (Quantity, Customer_ID, Product_ID) VALUES (2, 1, 2);
+INSERT INTO Cart (Quantity, Customer_ID, Product_ID) VALUES (1, 2, 4);
+INSERT INTO Cart (Quantity, Customer_ID, Product_ID) VALUES (3, 3, 7);
+INSERT INTO Cart (Quantity, Customer_ID, Product_ID) VALUES (2, 4, 8);
+INSERT INTO Cart (Quantity, Customer_ID, Product_ID) VALUES (1, 5, 10);
+
+
+
+INSERT INTO Payment (customer_id, order_id, payment_method) VALUES (1, 1, 'UPI');
+INSERT INTO Payment (customer_id, order_id, payment_method) VALUES (2, 2, 'COD');
+INSERT INTO Payment (customer_id, order_id, payment_method) VALUES (3, 3, 'UPI');
+INSERT INTO Payment (customer_id, order_id, payment_method) VALUES (4, 4, 'COD');
+INSERT INTO Payment (customer_id, order_id, payment_method) VALUES (5, 5, 'UPI');
+INSERT INTO Payment (customer_id, order_id, payment_method) VALUES (1, 6, 'COD');
+INSERT INTO Payment (customer_id, order_id, payment_method) VALUES (2, 7, 'UPI');
+INSERT INTO Payment (customer_id, order_id, payment_method) VALUES (3, 8, 'COD');
+INSERT INTO Payment (customer_id, order_id, payment_method) VALUES (4, 9, 'UPI');
+INSERT INTO Payment (customer_id, order_id, payment_method) VALUES (5, 10, 'COD');
+
+
+INSERT INTO orderdate (customer_id, order_id) VALUES (1, 1);
+INSERT INTO orderdate (customer_id, order_id) VALUES (2, 2);
+INSERT INTO orderdate (customer_id, order_id) VALUES (3, 3);
+INSERT INTO orderdate (customer_id, order_id) VALUES (4, 4);
+INSERT INTO orderdate (customer_id, order_id) VALUES (5, 5);
+INSERT INTO orderdate (customer_id, order_id) VALUES (1, 6);
+INSERT INTO orderdate (customer_id, order_id) VALUES (2, 7);
+INSERT INTO orderdate (customer_id, order_id) VALUES (3, 8);
+INSERT INTO orderdate (customer_id, order_id) VALUES (4, 9);
+INSERT INTO orderdate (customer_id, order_id) VALUES (5, 10);
+
+
+INSERT INTO admin (username, password, email, name) VALUES ('us', 'us123', 'us@gmail.com', 'ujjwal');
+INSERT INTO Customer (first_name, middle_name, last_name, email, password, address, phone_number)  VALUES  ('khwaish','', 'Rupani', 'khwaish@gmail.com', 'khwaish123', 'GH IIITD', '9873214560');
+INSERT INTO Customer (first_name,middle_name, last_name, email, password, address, phone_number)  VALUES  ('aamir','', 'khan', 'aamir@gmail.com', 'aamir123', 'Turkey', '9871234560');
+
+
+INSERT INTO Product (product_name, category_id, MRP, quantity, brand, discount, mfg_date, mfg_month, mfg_year, expiry_date, expiry_weeks, expiry_months) VALUES
+('Product A', 1, 10.50, 100, 'Brand X', 0.00, 1, 1, 2022, 1, 12, 6),
+('Product B', 2, 25.00, 50, 'Brand Y', 5.00, 15, 4, 2021, 31, 6, 3),
+('Product C', 3, 8.99, 200, 'Brand Z', 2.50, 1, 2, 2023, 30, 8, 4);
